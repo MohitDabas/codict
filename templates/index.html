@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link crossorigin="anonymous" media="all"
+    integrity="sha512-hddDYPWR0gBbqLRmIZP242WMEiYsVkYI2UCYCVUHB4h5DhD2cbtFJYG+HPh21dZGb+sbgDHxQBNJCBq7YbmlBQ=="
+    rel="stylesheet" href="https://github.githubassets.com/assets/frameworks-02a3eaa24db2bd1ed9b64450595fc2cf.css" />
+
+  <link crossorigin="anonymous" media="all"
+    integrity="sha512-YdIM/FwAk7kxvPGCpeT2JXxPrThv4m9rH7fLzjn+dg3zKb+PWOaxX1ioiOcmOb64+LeDKgBXsGL4b/BJQY/cdA=="
+    rel="stylesheet" href="https://github.githubassets.com/assets/github-102d2679bcc893600ce928d5c6d34297.css" />
+
+  <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
+  <script src="{{url_for('static',filename='modal.js')}}"> </script>
+
+  
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script>
+  
+    function sendDescribereq(lang, functionName, pathName) {
+      $('input[name="FunctionName"]').val(functionName);
+      $('.list-group').children().remove();
+      $.ajax({
+        url: '/describe',
+        type: 'GET',
+        data: {
+          language: lang,
+          functionName: functionName,
+          path: pathName
+        },
+        success: function (data) {
+          console.log(data);
+          $('#description').empty();
+          $('#description').append(data);
+
+          $.get('codesearch?function=' + functionName.replace(' ', '') + '&lang=' + lang, function (data) {
+
+            console.log('Hey');
+            $('#funcDetail').empty();
+            $('#funcDetail').append(data);
+
+
+          });
+        
+          $('#results').append('Results:')
+
+
+
+
+
+
+        }
+      });
+
+
+
+    }
+
+
+    function removeClass(funcClicked) {
+
+      $('.list-group').children().remove();
+      $('#description').empty();
+    }
+
+    function suggestResult() {
+
+      var langSelection = $("#langSelection").val();
+      var functionName = $('input[name="FunctionName"]').val();
+      if (functionName.length == 0) {
+        $('.list-group').children().remove();
+        $('#description').empty();
+
+      }
+      var FormFormat = new FormData();
+      FormFormat.append('langSelection', langSelection);
+      FormFormat.append('functionName', functionName);
+      $.ajax({
+        url: "/getlangnfunc",
+        type: 'POST',
+        data: FormFormat,
+        success: function (data) {
+          console.log(data);
+          //alert(data);
+          $('.list-group').children().remove();
+          $('#results').empty();
+          
+
+          for (i = 0; i < data.length; i++) {
+            $('.list-group').append(
+              `<li style="word-break: break-all;"><a style="word-break: break-all;" href="#" onclick=sendDescribereq("${langSelection}","${data[i]['functionName']}","${data[i]['path']}")>${data[i]['functionName']}</a></li>`
+            );
+
+          }
+          $('#funcDetail').empty();
+          $('#description').empty();
+          
+
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+      });
+
+    }
+  </script>
+
+</head>
+
+<body>
+  <div id="navbar">
+    <ul>
+      <li class="navlist">
+        <a href="#" onclick="getClick('Codict')">Codict</a>
+      </li>
+      <li class="navlist">
+        <a href="#" onclick="getClick('Credits')">Credits</a>
+      </li>
+      <li class="navlist">
+        <a href="#" onclick="getClick('CodeSearch')">Enable Git's Code Search</a>
+      </li>
+
+      <li  class="navlist" style="float:right"><a href="#">Codict's Github</a></li>
+    </ul>
+  </div>
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p id="abtTab"></p>
+    </div>
+  </div>
+
+  <div class="flex-container">
+    <div id="codeSearch" style="width: 34%;">
+      <p><h4>Search function Here!</h4></p>
+      <input type="text" placeholder="Search Your Function Here" name="FunctionName" style="width: 50%;    margin-bottom: 5px;"
+        oninput="suggestResult()">
+      <br/>  
+      <select id="langSelection">
+        <option value='PHP'>PHP</option>
+        <option value="Python">Python</option>
+        <option value="Java">Java</option>
+        <option value="Javascript">Javascript</option>
+        <option value="NodeJs">NodeJs</option>
+
+
+      </select>
+      <input type="button" name="search" value="Search">
+      <ul class="list-group" id="result"></ul>
+      <p><u>
+          <h3 id="results"></h3>
+        </u></p>
+      <div id="description" ></div>
+      <div id="funcDetail" ></div>
+
+
+
+
+
+    </div>
+
+
+    <div style="width: 33%;">
+      <textarea ></textarea>
+
+      <!-- 
+    <iframe height="400px" width="100%" src="https://repl.it/repls/UnhappyPositiveGeeklog?lite=true" scrolling="no" frameborder="no" allowtransparency="true" allowfullscreen="true" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-modals"></iframe> -->
+    </div>
+
+
+    <div style="width: 33%;" id="interCompPlace">
+
+    
+
+    
+    </div>
+
+  </div>
+
+
+
+</body>
+
+</html>
