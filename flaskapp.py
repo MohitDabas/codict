@@ -6,7 +6,7 @@ from phpDoc import phpsendSuggestion,phpDescribeRequest
 from javascriptDoc import javascriptsendSuggestion,javascriptDescribeRequest
 from javaDoc import javasendSuggestion,javaDescribeRequest
 from nodejsDoc import nodejssendSuggestion,nodejsDescribeRequest
-import gitSearch
+
 
 @app.route('/')
 def home():
@@ -48,6 +48,7 @@ def describe():
 
 @app.route('/codesearch',methods=['GET'])   
 def codesearch():
+    from gitSearch import codesearch
     lang=request.args.get('lang')
     functionName=request.args.get('function')
     print(lang,functionName)
