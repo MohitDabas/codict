@@ -52,7 +52,7 @@ def codesearch():
     lang=request.args.get('lang')
     functionName=request.args.get('function')
     print(lang,functionName)
-    return gitSearch.codesearch(lang,functionName)
+    return codesearch(lang,functionName)
 
 @app.route('/getcurlcommand',methods=['POST'])
 def getCurlCommand():
