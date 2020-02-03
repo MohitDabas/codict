@@ -53,6 +53,20 @@ def codesearch():
     print(lang,functionName)
     return gitSearch.codesearch(lang,functionName)
 
+@app.route('/getcurlcommand',methods=['POST'])
+def getCurlCommand():
+     curlCommand=request.form['curlCommand']
+     print (curlCommand)
+     try:
+         fO=open('curlCommand.txt','w')
+         fO.write(curlCommand)
+         fO.close()
+         return jsonify({'Message':'CURL command  stored Successfully.You may close the box'}) 
+
+     except:
+         return jsonify({'Message':'CURL command not stored Error'})    
+    
+
 
 
     
